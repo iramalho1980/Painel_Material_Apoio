@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Seletor - Material de Apoio</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #8fa3b8 0%, #c9b8a8 50%, #d4c5a9 100%);
+        }
+
+        .mobile-frame {
+            position: relative;
+            width: 100%;
+            max-width: 420px;
+            aspect-ratio: 9 / 19.5;
+            background: #000;
+            border-radius: 52px;
+            padding: 14px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .mobile-screen {
+            width: 100%;
+            height: 100%;
+            border-radius: 44px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            background: linear-gradient(to bottom, #8fa3b8, #a8b8c8, #d4c5a9);
+            position: relative;
+        }
+
+        /* Dynamic Island - iPhone moderno */
+        .dynamic-island {
+            position: absolute;
+            top: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 28px;
+            background: #000;
+            border-radius: 28px;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .dynamic-island::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: #333;
+            border-radius: 50%;
+            margin-right: 4px;
+        }
+
+        .dynamic-island::after {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: #333;
+            border-radius: 50%;
+            margin-left: 4px;
+        }
+
+        .status-bar {
+            height: 32px;
+            background: linear-gradient(to bottom, #7a8fa8, #8fa3b8);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            color: white;
+            font-size: 12px;
+            font-weight: 600;
+            z-index: 5;
+            margin-top: 8px;
+        }
+
+        .status-bar-right {
+            display: flex;
+            gap: 4px;
+        }
+
+        .page-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .page {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            padding: 16px;
+            gap: 16px;
+            opacity: 0;
+            transition: opacity 0.4s ease-in-out;
+            pointer-events: none;
+            overflow-y: auto;
+        }
+
+        .page.active {
+            opacity: 1;
+            pointer-events: auto;
+            position: relative;
+        }
+
+        /* Home Page */
+        .home-page {
+            gap: 24px;
+        }
+
+        .home-page .content-area {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            flex: 1;
+        }
+
+        .header-card {
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 16px;
+            padding: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .header-card:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+        }
+
+        .header-card h1 {
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .icon {
+            width: 24px;
+            height: 24px;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .buttons-container {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            flex: 1;
+            justify-content: center;
+        }
+
+        .glass-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 16px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 14px;
+            color: white;
+            text-decoration: none;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-align: center;
+            border: none;
+        }
+
+        .glass-button:hover {
+            background: rgba(255, 255, 255, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .glass-button:active {
+            transform: translateY(0);
+        }
+
+        .glass-button .button-text {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .glass-button .button-label {
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+
+        .button-icon {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+        }
+
+        .footer {
+            text-align: center;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.6);
+            padding: 16px 0;
+            margin-top: auto;
+        }
+
+        .footer p {
+            margin: 2px 0;
+        }
+
+        /* Content Pages */
+        .content-page {
+            flex-direction: column;
+            padding-top: 12px;
+        }
+
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 12px;
+            margin-bottom: 16px;
+        }
+
+        .page-header-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+        }
+
+        .page-header h2 {
+            color: white;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+        }
+
+        .back-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .back-button:active {
+            transform: translateY(0);
+        }
+
+        .back-button svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .page-content {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .content-item {
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .content-item:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+        }
+
+        .content-item a {
+            display: inline-block;
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .content-item a:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            transform: translateY(-2px);
+        }
+
+        /* SVG Icons */
+        svg {
+            stroke: currentColor;
+            stroke-width: 2.5;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .mobile-frame {
+                max-width: 100%;
+            }
+
+            .glass-button {
+                padding: 14px 20px;
+                font-size: 13px;
+            }
+
+            .page-header h2 {
+                font-size: 13px;
+            }
+        }
+
+        /* Scrollbar styling */
+        .page-container::-webkit-scrollbar,
+        .page-content::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .page-container::-webkit-scrollbar-track,
+        .page-content::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .page-container::-webkit-scrollbar-thumb,
+        .page-content::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+        }
+
+        .page-container::-webkit-scrollbar-thumb:hover,
+        .page-content::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="mobile-frame">
+        <div class="dynamic-island"></div>
+        <div class="mobile-screen">
+            <!-- Status Bar -->
+            <div class="status-bar">
+                <span>9:41</span>
+                <div class="status-bar-right">
+                    <span>📶</span>
+                    <span>📡</span>
+                    <span>🔋</span>
+                </div>
+            </div>
+
+            <!-- Page Container -->
+            <div class="page-container">
+                <!-- Home Page -->
+                <div class="page home-page active" data-page="home">
+                    <div class="content-area">
+                        <!-- Header -->
+                        <div class="header-card">
+                            <svg class="icon" viewBox="0 0 24 24">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                            </svg>
+                            <h1>MATERIAL DE APOIO</h1>
+                        </div>
+
+                        <!-- Buttons Container -->
+                        <div class="buttons-container">
+                            <!-- Button 1: Escrita Fiscal -->
+                            <button class="glass-button" onclick="navigateTo('fiscal')">
+                                <svg class="button-icon" viewBox="0 0 24 24">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                    <polyline points="14 2 14 8 20 8"></polyline>
+                                </svg>
+                                <div class="button-text">
+                                    <span class="button-label">ESCRITA FISCAL</span>
+                                </div>
+                            </button>
+
+                            <!-- Button 2: Contabilidade -->
+                            <button class="glass-button" onclick="navigateTo('contabilidade')">
+                                <svg class="button-icon" viewBox="0 0 24 24">
+                                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                                </svg>
+                                <div class="button-text">
+                                    <span class="button-label">CONTABILIDADE</span>
+                                </div>
+                            </button>
+
+                            <!-- Button 3: Patrimônio -->
+                            <button class="glass-button" onclick="navigateTo('patrimonio')">
+                                <svg class="button-icon" viewBox="0 0 24 24">
+                                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                                </svg>
+                                <div class="button-text">
+                                    <span class="button-label">PATRIMÔNIO</span>
+                                </div>
+                            </button>
+
+                            <!-- Button 4: LALUR -->
+                            <button class="glass-button" onclick="navigateTo('lalur')">
+                                <svg class="button-icon" viewBox="0 0 24 24">
+                                    <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                                </svg>
+                                <div class="button-text">
+                                    <span class="button-label">LALUR</span>
+                                </div>
+                            </button>
+                        </div>
+
+                        <!-- Footer -->
+                        <div class="footer">
+                            <p>© 2026 MATERIAL DE APOIO</p>
+                            <p>Organização e Praticidade</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Escrita Fiscal Page -->
+                <div class="page content-page" data-page="fiscal">
+                    <div class="page-header">
+                        <div class="page-header-title">
+                            <svg class="icon" viewBox="0 0 24 24">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                            </svg>
+                            <h2>ESCRITA FISCAL</h2>
+                        </div>
+                        <button class="back-button" onclick="navigateTo('home')" title="Voltar">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M19 12H5M12 19l-7-7 7-7"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="page-content">
+                        <div class="content-item">
+                            <a href="https://iramalho1980.github.io/Acompanhamentos_Fiscais/" target="_blank">Acessar Material</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contabilidade Page -->
+                <div class="page content-page" data-page="contabilidade">
+                    <div class="page-header">
+                        <div class="page-header-title">
+                            <svg class="icon" viewBox="0 0 24 24">
+                                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                            </svg>
+                            <h2>CONTABILIDADE</h2>
+                        </div>
+                        <button class="back-button" onclick="navigateTo('home')" title="Voltar">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M19 12H5M12 19l-7-7 7-7"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="page-content">
+                        <div class="content-item">
+                            <a href="https://iramalho1980.github.io/Acompanhamento_Contabilidade/" target="_blank">Acessar Material</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Patrimônio Page -->
+                <div class="page content-page" data-page="patrimonio">
+                    <div class="page-header">
+                        <div class="page-header-title">
+                            <svg class="icon" viewBox="0 0 24 24">
+                                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                            </svg>
+                            <h2>PATRIMÔNIO</h2>
+                        </div>
+                        <button class="back-button" onclick="navigateTo('home')" title="Voltar">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M19 12H5M12 19l-7-7 7-7"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="page-content">
+                        <div class="content-item">
+                            <a href="https://iramalho1980.github.io/Acompanhamento_Patrimonio/" target="_blank">Acessar Material</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LALUR Page -->
+                <div class="page content-page" data-page="lalur">
+                    <div class="page-header">
+                        <div class="page-header-title">
+                            <svg class="icon" viewBox="0 0 24 24">
+                                <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                            </svg>
+                            <h2>LALUR</h2>
+                        </div>
+                        <button class="back-button" onclick="navigateTo('home')" title="Voltar">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M19 12H5M12 19l-7-7 7-7"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="page-content">
+                        <div class="content-item">
+                            <a href="https://iramalho1980.github.io/Acompanhamento_lalur/" target="_blank">Acessar Material</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function navigateTo(pageName) {
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(page => {
+                page.classList.remove('active');
+            });
+            const targetPage = document.querySelector(`[data-page="${pageName}"]`);
+            if (targetPage) {
+                targetPage.classList.add('active');
+            }
+        }
+    </script>
+</body>
+</html>
